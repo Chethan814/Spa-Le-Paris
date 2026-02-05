@@ -57,22 +57,25 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const services = [
+    "Classic Swedish Massage",
+    "Aromatherapy Massage",
+    "Deep Tissue Massage",
+    "Balinese Massage",
     "Signature Massage",
-    "Deep Tissue Therapy",
-    "Hot Stone Massage",
-    "Aromatherapy",
-    "Organic Facial",
-    "Body Scrub & Polish",
-    "Couple's Retreat",
-    "Royal Hammam Experience",
+    "Foot Reflexology",
+    "Back Therapy",
+    "Hand, Neck & Shoulder Therapy",
+    "Face Reflexology",
+    "Essential Scrub",
+    "Signature Coffee Scrub",
 ];
 
-const durations = ["30 mins", "60 mins", "90 mins", "120 mins"];
+const durations = ["30min", "45min", "60min", "90min", "120min"];
 
 const locations = [
-    "Paris Central (Flagship)",
-    "Champs-Élysées Luxury",
-    "Le Marais Wellness",
+    "Spa Le Paris - RMV",
+    "Riverside Wellness",
+    "Hills Retreat",
 ];
 
 const timeSlots = ["Morning", "Afternoon", "Evening"];

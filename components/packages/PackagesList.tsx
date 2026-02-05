@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { useBooking } from "@/context/BookingContext";
 
 // Data Structure with badges
 const categories = {
@@ -146,6 +147,7 @@ const PackageCard = ({ item, index }: { item: PackageItem; index: number }) => {
     const [selectedDuration, setSelectedDuration] = useState(item.prices[0].duration);
     const [currentPrice, setCurrentPrice] = useState(item.prices[0].price);
     const [isAnimating, setIsAnimating] = useState(false);
+    const { openBooking } = useBooking();
 
 
     const getBadgeStyle = (badge: string) => {
@@ -237,15 +239,17 @@ const PackageCard = ({ item, index }: { item: PackageItem; index: number }) => {
                             {currentPrice}
                         </span>
                     </div>
-                    <Link href="/locations">
-                        <Button
-                            variant="gold"
-                            size="default"
-                            className="shadow-soft hover:shadow-glow transition-all duration-500"
-                        >
-                            Book This Experience
-                        </Button>
-                    </Link>
+                    <Button
+                        variant="gold"
+                        size="default"
+                        className="shadow-soft hover:shadow-glow transition-all duration-500"
+                        onClick={() => openBooking({
+                            package: item.name,
+                            duration: selectedDuration
+                        })}
+                    >
+                        Book This Experience
+                    </Button>
                 </div>
             </div>
 
