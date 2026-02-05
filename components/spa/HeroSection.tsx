@@ -48,6 +48,7 @@ const HeroSection = () => {
             fill
             priority
             quality={90}
+            unoptimized
             onLoad={() => setImageLoaded(true)}
             className={`object-cover transition-all duration-[1500ms] ${imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
               } ${!videoReady ? "animate-ken-burns" : ""}`}
