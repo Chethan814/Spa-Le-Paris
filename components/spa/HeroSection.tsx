@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 import { useBooking } from "@/context/BookingContext";
 
@@ -41,11 +42,14 @@ const HeroSection = () => {
           className={`absolute inset-0 transition-opacity duration-[2000ms] ease-out ${videoReady ? "opacity-0" : "opacity-100"
             }`}
         >
-          <img
+          <Image
             src={spaHero}
             alt="Luxury spa interior"
+            fill
+            priority
+            quality={90}
             onLoad={() => setImageLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-[1500ms] ${imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
+            className={`object-cover transition-all duration-[1500ms] ${imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
               } ${!videoReady ? "animate-ken-burns" : ""}`}
           />
         </div>
