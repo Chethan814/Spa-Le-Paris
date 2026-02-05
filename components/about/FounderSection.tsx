@@ -53,7 +53,7 @@ const FounderSection = () => {
               }`}
           >
             <span className="font-heading text-6xl md:text-7xl text-champagne/30 leading-none">
-              "
+              &quot;
             </span>
           </div>
 
@@ -87,7 +87,7 @@ const FounderSection = () => {
             style={{ transitionDelay: isVisible ? "1500ms" : "0ms" }}
           >
             <span className="font-heading text-6xl md:text-7xl text-champagne/30 leading-none">
-              "
+              &quot;
             </span>
           </div>
 

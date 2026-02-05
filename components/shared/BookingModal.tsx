@@ -98,19 +98,22 @@ export function BookingModal() {
 
     useEffect(() => {
         if (isOpen) {
-            form.reset({
-                fullName: "",
-                phone: "",
-                email: "",
-                service: prefillData.service || prefillData.package || "",
-                duration: prefillData.duration || "",
-                location: prefillData.location || "",
-                timeSlot: "",
-                notes: "",
-            });
-            setIsSuccess(false);
+            const timeoutId = setTimeout(() => {
+                form.reset({
+                    fullName: "",
+                    phone: "",
+                    email: "",
+                    service: prefillData.service || prefillData.package || "",
+                    duration: prefillData.duration || "",
+                    location: prefillData.location || "",
+                    timeSlot: "",
+                    notes: "",
+                });
+                setIsSuccess(false);
+            }, 0);
+            return () => clearTimeout(timeoutId);
         }
-    }, [isOpen, prefillData, form.reset, form]);
+    }, [isOpen, prefillData, form]);
 
 
     async function onSubmit(values: FormValues) {

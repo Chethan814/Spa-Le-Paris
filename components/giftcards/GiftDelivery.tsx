@@ -78,7 +78,7 @@ const GiftDelivery = ({
           >
             <Label htmlFor="email" className="font-body text-sm text-foreground flex items-center gap-2">
               <Mail className="w-4 h-4 text-champagne" strokeWidth={1.5} />
-              Recipient's Email Address
+              Recipient&apos;s Email Address
             </Label>
             <Input
               id="email"

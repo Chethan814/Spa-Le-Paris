@@ -65,7 +65,7 @@ export default function TermsOfServicePage() {
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <div className="w-1.5 h-1.5 rounded-full bg-champagne mt-2 shrink-0" />
-                                            <span>We require at least 24 hours' notice for cancellations or rescheduling. Late cancellations may be subject to fees.</span>
+                                            <span>We require at least 24 hours&apos; notice for cancellations or rescheduling. Late cancellations may be subject to fees.</span>
                                         </li>
                                         <li className="flex items-start gap-3">
                                             <div className="w-1.5 h-1.5 rounded-full bg-champagne mt-2 shrink-0" />

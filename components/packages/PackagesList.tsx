@@ -147,16 +147,6 @@ const PackageCard = ({ item, index }: { item: PackageItem; index: number }) => {
     const [currentPrice, setCurrentPrice] = useState(item.prices[0].price);
     const [isAnimating, setIsAnimating] = useState(false);
 
-    useEffect(() => {
-        const priceObj = item.prices.find((p) => p.duration === selectedDuration);
-        if (priceObj) {
-            setIsAnimating(true);
-            setTimeout(() => {
-                setCurrentPrice(priceObj.price);
-                setIsAnimating(false);
-            }, 150);
-        }
-    }, [selectedDuration, item.prices]);
 
     const getBadgeStyle = (badge: string) => {
         switch (badge) {
@@ -211,7 +201,16 @@ const PackageCard = ({ item, index }: { item: PackageItem; index: number }) => {
                     {item.prices.map((priceOption) => (
                         <button
                             key={priceOption.duration}
-                            onClick={() => setSelectedDuration(priceOption.duration)}
+                            onClick={() => {
+                                if (selectedDuration !== priceOption.duration) {
+                                    setSelectedDuration(priceOption.duration);
+                                    setIsAnimating(true);
+                                    setTimeout(() => {
+                                        setCurrentPrice(priceOption.price);
+                                        setIsAnimating(false);
+                                    }, 150);
+                                }
+                            }}
                             className={cn(
                                 "px-4 py-2 rounded-full text-sm font-medium transition-all duration-500 border",
                                 selectedDuration === priceOption.duration

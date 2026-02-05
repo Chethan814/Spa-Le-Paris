@@ -87,7 +87,7 @@ const GiftPersonalization = ({
               </Label>
               <Input
                 id="recipientName"
-                placeholder="Enter recipient's name"
+                placeholder="Enter recipient&apos;s name"
                 value={recipientName}
                 onChange={(e) => onRecipientNameChange(e.target.value)}
                 className="bg-card border-border/50 focus:border-champagne/50 focus:ring-champagne/20 rounded-xl h-12"
@@ -168,7 +168,7 @@ const GiftPersonalization = ({
                 {message && (
                   <div className="mb-4 p-4 bg-secondary/50 rounded-xl">
                     <p className="font-body text-sm text-muted-foreground italic leading-relaxed">
-                      "{message}"
+                      &quot;{message}&quot;
                     </p>
                   </div>
                 )}

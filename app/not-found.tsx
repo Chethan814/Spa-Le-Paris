@@ -13,8 +13,8 @@ export default function NotFound() {
                     <h1 className="font-heading text-7xl md:text-9xl text-champagne/20 mb-4">404</h1>
                     <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-6">Oops! Page not found</h2>
                     <p className="font-body text-muted-foreground max-w-md mx-auto mb-10">
-                        The treatment you're looking for seems to have escaped into a world of silence.
-                        Let's get you back to tranquility.
+                        The treatment you&apos;re looking for seems to have escaped into a world of silence.
+                        Let&apos;s get you back to tranquility.
                     </p>
                     <Link
                         href="/"

@@ -97,7 +97,7 @@ const FranchiseForm = () => {
               Submit Your Application
             </h2>
             <p className="font-body text-muted-foreground leading-relaxed">
-              If our philosophy aligns with yours, we'd be glad to begin a
+              If our philosophy aligns with yours, we&apos;d be glad to begin a
               conversation.
             </p>
           </div>

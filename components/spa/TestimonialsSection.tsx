@@ -97,7 +97,7 @@ const TestimonialsSection = () => {
                   }`}
               >
                 <p className="font-heading text-2xl md:text-3xl font-light text-foreground/90 italic leading-relaxed mb-8">
-                  "{testimonial.quote}"
+                  &quot;{testimonial.quote}&quot;
                 </p>
                 <div>
                   <p className="font-body text-sm font-medium text-foreground">
