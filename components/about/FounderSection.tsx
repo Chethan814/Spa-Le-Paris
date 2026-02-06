@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { Quote } from "lucide-react";
 
 const FounderSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,78 +34,82 @@ const FounderSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="py-20 md:py-28 bg-background border-t border-border/30"
+      className="py-24 md:py-32 bg-background relative overflow-hidden"
     >
-      <div className="container mx-auto px-6">
-        <div className="max-w-3xl mx-auto">
-          {/* Section Title */}
-          <div
-            className={`text-center transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-              }`}
-          >
-            <h2 className="font-heading text-2xl md:text-3xl text-foreground mb-10">
-              A Note from the Founder
-            </h2>
-            <div className="w-12 h-px bg-champagne mx-auto mb-12" />
+      {/* Background Decorative Element */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-champagne/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* Left Column: Image with Frame */}
+          <div className={`relative transition-all duration-1000 delay-300 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"}`}>
+            <div className="relative group max-w-md mx-auto lg:mx-0">
+              {/* Decorative Frame */}
+              <div className="absolute -inset-4 border border-champagne/30 rounded-2xl transition-all duration-500 group-hover:border-champagne/60 group-hover:-inset-6" />
+
+              {/* Main Image Container */}
+              <div className="relative aspect-[4/5] overflow-hidden rounded-xl shadow-2xl bg-muted overflow-hidden">
+                <Image
+                  src="/assets/Founder.jpeg"
+                  alt="Pradip Naidu - Founder of Spa Le Paris"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                {/* Soft overlay on hover */}
+                <div className="absolute inset-0 bg-champagne/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+
+              {/* Accent tag */}
+              <div className="absolute -bottom-4 -right-4 bg-background border border-sand px-6 py-3 rounded-lg shadow-xl translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                <p className="text-xs font-medium tracking-widest text-champagne-dark uppercase">Experience & Integrity</p>
+              </div>
+            </div>
           </div>
 
-          {/* Opening Quote Mark */}
-          <div
-            className={`text-center mb-8 transition-all duration-700 delay-200 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
-              }`}
-          >
-            <span className="font-heading text-6xl md:text-7xl text-champagne/30 leading-none">
-              &quot;
-            </span>
-          </div>
+          {/* Right Column: Content */}
+          <div className="space-y-8">
+            <div className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+              <span className="text-xs font-medium tracking-[0.2em] text-champagne-dark uppercase mb-4 block">Our Visionary</span>
+              <h2 className="font-heading text-3xl md:text-4xl text-charcoal">A Note from the Founder</h2>
+              <div className="w-12 h-px bg-champagne-dark mt-6 mb-8" />
+            </div>
 
-          {/* Editorial Content - Staggered paragraphs */}
-          <div className="space-y-6 text-left md:text-center">
-            {paragraphs.map((paragraph, index) => (
+            {/* Staggered Paragraphs */}
+            <div className="space-y-6">
+              <Quote className={`w-8 h-8 text-champagne/30 mb-2 transition-all duration-700 delay-500 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"}`} />
+
+              {paragraphs.map((paragraph, index) => (
+                <p
+                  key={index}
+                  className={`font-body text-charcoal/80 text-lg leading-relaxed transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                  style={{ transitionDelay: isVisible ? `${600 + index * 200}ms` : "0ms" }}
+                >
+                  {paragraph}
+                </p>
+              ))}
+
               <p
-                key={index}
-                className={`font-body text-muted-foreground text-lg leading-relaxed transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                  }`}
-                style={{ transitionDelay: isVisible ? `${400 + index * 300}ms` : "0ms" }}
+                className={`font-body text-charcoal text-lg md:text-xl font-medium leading-relaxed pt-4 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                style={{ transitionDelay: isVisible ? "1400ms" : "0ms" }}
               >
-                {paragraph}
+                Our commitment is simple: genuine wellness delivered with professionalism, integrity, and respect.
               </p>
-            ))}
+            </div>
 
-            {/* Final commitment statement */}
-            <p
-              className={`font-body text-foreground text-lg md:text-xl leading-relaxed pt-4 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-              style={{ transitionDelay: isVisible ? "1300ms" : "0ms" }}
+            {/* Signature Section */}
+            <div
+              className={`pt-8 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: isVisible ? "1700ms" : "0ms" }}
             >
-              Our commitment is simple: genuine wellness delivered with professionalism, integrity, and respect.
-            </p>
+              <div className="space-y-1">
+                <p className="font-heading text-2xl text-charcoal italic tracking-wide">— Pradip Naidu</p>
+                <p className="font-body text-xs text-champagne-dark tracking-[0.2em] uppercase">Founder, Spa Le Paris</p>
+              </div>
+            </div>
           </div>
 
-          {/* Closing Quote Mark */}
-          <div
-            className={`text-center mt-8 transition-all duration-700 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
-              }`}
-            style={{ transitionDelay: isVisible ? "1500ms" : "0ms" }}
-          >
-            <span className="font-heading text-6xl md:text-7xl text-champagne/30 leading-none">
-              &quot;
-            </span>
-          </div>
-
-          {/* Signature with elegant reveal */}
-          <div
-            className={`mt-12 pt-8 border-t border-border/30 text-center transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-              }`}
-            style={{ transitionDelay: isVisible ? "1800ms" : "0ms" }}
-          >
-            <p className="font-heading text-xl md:text-2xl text-foreground italic">
-              — Pradip Naidu
-            </p>
-            <p className="font-body text-sm text-muted-foreground mt-2 tracking-wide uppercase">
-              Founder, Spa Le Paris
-            </p>
-          </div>
         </div>
       </div>
     </section>
