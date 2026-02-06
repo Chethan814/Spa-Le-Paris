@@ -7,63 +7,73 @@ import { buttonVariants } from "@/components/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
-function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
+function Calendar({
+  className,
+  classNames = {},
+  showOutsideDays = true,
+  ...props
+}: CalendarProps) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      className={cn("p-0", className)}
-      captionLayout="dropdown"
-      startMonth={new Date()}
-      endMonth={new Date(new Date().getFullYear() + 5, 11)}
+      className={cn("p-3", className)}
       classNames={{
-        months: "flex flex-col w-full",
-        month: "space-y-0 w-full",
-        caption: "flex justify-between items-center bg-sand/20 p-3 relative h-14 border-b border-sand/30",
-        caption_label: "hidden", // We use dropdowns instead
-        caption_dropdowns: "flex justify-center flex-1 gap-2 mx-8",
-        dropdown: "bg-transparent border-none text-sm font-heading focus:ring-0 focus:outline-none cursor-pointer hover:text-champagne transition-colors appearance-none pr-1",
-        dropdown_month: "font-semibold",
-        dropdown_year: "opacity-60",
-        vhidden: "hidden", // Hide accessibility text that gets in the way of custom layout
-        nav: "absolute inset-0 flex items-center justify-between px-2 pointer-events-none",
+        /* ===== LAYOUT ===== */
+        months: "flex flex-col gap-4",
+        month: "space-y-4",
+
+        /* ===== CAPTION & NAV ===== */
+        caption: "relative flex items-center justify-center h-9",
+        caption_label: "sr-only",
+        nav: "absolute inset-y-0 w-full flex items-center justify-between px-1",
         nav_button: cn(
-          buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 p-0 hover:bg-champagne/10 text-charcoal/70 pointer-events-auto transition-all duration-200"
+          buttonVariants({ variant: "outline" }),
+          "h-7 w-7 bg-transparent p-0 opacity-60 hover:opacity-100 transition"
         ),
-        nav_button_previous: "relative z-10",
-        nav_button_next: "relative z-10",
-        table: "w-full border-collapse border-l border-t border-sand/30",
-        head_row: "flex w-full bg-ivory/50",
-        head_cell: "flex-1 text-charcoal font-bold text-xs py-3 border-r border-b border-sand/30 text-center bg-ivory/30",
-        row: "flex w-full",
-        cell: cn(
-          "flex-1 text-center text-sm p-0 relative border-r border-b border-sand/30 h-11 transition-all duration-200",
-          "hover:bg-sand/10 focus-within:z-20",
-          "[&:has([aria-selected])]:bg-champagne/10"
-        ),
+        nav_button_previous: "relative",
+        nav_button_next: "relative",
+
+        /* ===== TABLE (DO NOT FLEX) ===== */
+        table: "w-full border-collapse table-fixed",
+
+        /* ✅ Hide weekday labels WITHOUT breaking layout */
+        head_row: "invisible h-0",
+        head_cell: "w-9 p-0",
+
+        row: "table-row",
+        cell:
+          "table-cell h-9 w-9 p-0 text-center align-middle relative",
+
+        /* ===== DAY BUTTON ===== */
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-full w-full p-0 font-normal hover:bg-transparent rounded-none transition-none"
+          "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
         ),
+
         day_selected:
-          "bg-champagne text-white hover:bg-champagne-dark hover:text-white focus:bg-champagne focus:text-white font-bold !opacity-100 shadow-inner",
-        day_today: "bg-sand/30 text-champagne-dark font-bold",
-        day_outside: "text-charcoal/20 opacity-30 cursor-default pointer-events-none",
-        day_disabled: "text-charcoal/10 opacity-20 cursor-not-allowed",
-        day_range_middle: "aria-selected:bg-champagne/5 aria-selected:text-charcoal",
+          "bg-primary text-primary-foreground hover:bg-primary focus:bg-primary",
+        day_today: "bg-accent text-accent-foreground font-semibold",
+        day_outside:
+          "text-muted-foreground opacity-40 pointer-events-none",
+        day_disabled:
+          "text-muted-foreground opacity-30 cursor-not-allowed",
+        day_range_middle:
+          "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+
         ...classNames,
       }}
       components={{
         Chevron: ({ orientation }) => {
           const Icon = orientation === "left" ? ChevronLeft : ChevronRight;
-          return <Icon className="h-5 w-5" />;
+          return <Icon className="h-4 w-4" />;
         },
       }}
       {...props}
     />
   );
 }
+
 Calendar.displayName = "Calendar";
 
 export { Calendar };
