@@ -51,9 +51,10 @@ export const services = [
 export const durations = ["30min", "45min", "60min", "90min", "120min"];
 
 export const locations = [
-    "Spa Le Paris - RMV",
-    "Riverside Wellness",
-    "Hills Retreat",
+    "SPA LE PARIS - KALYAN NAGAR",
+    "SPA LE PARIS - HULIMAVU",
+    "SPA LE PARIS - JP NAGAR 7 TH PHASE",
+    "SPA LE PARIS - NEW BEL ROAD",
 ];
 
 export const timeSlots = ["Morning", "Afternoon", "Evening"];
