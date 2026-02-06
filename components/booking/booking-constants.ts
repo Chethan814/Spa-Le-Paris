@@ -7,7 +7,27 @@ export const formSchema = z.object({
     service: z.string().min(1, { message: "Please select a service" }),
     duration: z.string().min(1, { message: "Please select duration" }),
     location: z.string().min(1, { message: "Please select a location" }),
-    date: z.date({ message: "Please select a date" }),
+    date: z.string()
+        .min(1, { message: "Date is required" })
+        .regex(/^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/, {
+            message: "Use DD-MM-YYYY format",
+        })
+        .refine((val) => {
+            const [day, month, year] = val.split("-").map(Number);
+            const date = new Date(year, month - 1, day);
+            return (
+                date.getFullYear() === year &&
+                date.getMonth() === month - 1 &&
+                date.getDate() === day
+            );
+        }, { message: "Invalid date" })
+        .refine((val) => {
+            const [day, month, year] = val.split("-").map(Number);
+            const inputDate = new Date(year, month - 1, day);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return inputDate >= today;
+        }, { message: "Date cannot be in the past" }),
     timeSlot: z.string().min(1, { message: "Please select a time slot" }),
     notes: z.string().optional(),
 });

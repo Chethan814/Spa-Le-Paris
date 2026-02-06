@@ -23,26 +23,25 @@ function Calendar({
         month: "space-y-4",
 
         /* ===== CAPTION & NAV ===== */
-        caption: "relative flex items-center justify-center h-9",
-        caption_label: "sr-only",
-        nav: "absolute inset-y-0 w-full flex items-center justify-between px-1",
+        caption: "relative flex items-center justify-center pt-1 px-4 mb-4",
+        caption_label: "text-sm font-medium text-charcoal",
+        nav: "absolute inset-y-0 w-full flex items-center justify-between pointer-events-none",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-60 hover:opacity-100 transition"
+          "h-7 w-7 bg-transparent p-0 opacity-60 hover:opacity-100 transition pointer-events-auto"
         ),
         nav_button_previous: "relative",
         nav_button_next: "relative",
 
-        /* ===== TABLE (DO NOT FLEX) ===== */
-        table: "w-full border-collapse table-fixed",
+        /* ===== TABLE ===== */
+        table: "w-full border-collapse space-y-1",
 
-        /* ✅ Hide weekday labels WITHOUT breaking layout */
-        head_row: "invisible h-0",
-        head_cell: "w-9 p-0",
+        /* ✅ Show weekdays properly aligned */
+        head_row: "flex w-full mb-1",
+        head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem] text-center",
 
-        row: "table-row",
-        cell:
-          "table-cell h-9 w-9 p-0 text-center align-middle relative",
+        row: "flex w-full mt-2",
+        cell: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md",
 
         /* ===== DAY BUTTON ===== */
         day: cn(
@@ -75,5 +74,4 @@ function Calendar({
 }
 
 Calendar.displayName = "Calendar";
-
 export { Calendar };

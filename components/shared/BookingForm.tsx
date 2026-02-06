@@ -4,9 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -24,12 +23,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 
 import {
@@ -64,6 +57,7 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
             duration: "",
             location: "",
             timeSlot: "",
+            date: "",
             notes: "",
         },
     });
@@ -77,6 +71,7 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
             duration: prefillData.duration || "",
             location: prefillData.location || "",
             timeSlot: "",
+            date: "",
             notes: "",
         });
     }, [prefillData, form]);
@@ -223,39 +218,47 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                                     control={form.control}
                                     name="date"
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-col space-y-1">
-                                            <FormLabel className="text-[11px]">Preferred Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full h-9 pl-3 text-left font-normal bg-white/50 border-sand text-sm",
-                                                                !field.value && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            {field.value ? (
-                                                                format(field.value, "PPP")
-                                                            ) : (
-                                                                <span>Pick a date</span>
-                                                            )}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-white border-sand" align="end">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value}
-                                                        onSelect={field.onChange}
-                                                        disabled={(date) =>
-                                                            date < new Date(new Date().setHours(0, 0, 0, 0))
+                                        <FormItem className="space-y-1">
+                                            <FormLabel className="text-[11px]">Preferred Date (DD-MM-YYYY)</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder={`E.g., 15-${format(new Date(), "MM-yyyy")}`}
+                                                    {...field}
+                                                    onChange={(e) => {
+                                                        const raw = e.target.value;
+                                                        const prev = field.value || "";
+
+                                                        // Only allow numbers and dashes
+                                                        let val = raw.replace(/[^0-9-]/g, "");
+
+                                                        // Limit length to 10 (DD-MM-YYYY)
+                                                        if (val.length > 10) val = val.substring(0, 10);
+
+                                                        // Logic for Day (first 2 digits)
+                                                        if (val.length >= 2) {
+                                                            const day = parseInt(val.substring(0, 2));
+                                                            if (day > 31) val = "31" + val.substring(2);
+                                                            if (day === 0 && val.length === 2) val = "01";
+
+                                                            // Auto-fill separator and Month/Year
+                                                            if (val.length === 2 && val.length > prev.length && !val.includes("-")) {
+                                                                val = val + format(new Date(), "-MM-yyyy");
+                                                            }
                                                         }
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
+
+                                                        // Logic for Month (digits 4-5)
+                                                        if (val.length >= 5) {
+                                                            const monthStr = val.substring(3, 5);
+                                                            const month = parseInt(monthStr);
+                                                            if (month > 12) val = val.substring(0, 3) + "12" + val.substring(5);
+                                                            if (month === 0 && monthStr.length === 2) val = val.substring(0, 3) + "01" + val.substring(5);
+                                                        }
+
+                                                        field.onChange(val);
+                                                    }}
+                                                    className="h-9 bg-white/50 border-sand focus:ring-champagne text-sm"
+                                                />
+                                            </FormControl>
                                             <FormMessage className="text-[10px]" />
                                         </FormItem>
                                     )}
