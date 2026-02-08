@@ -83,12 +83,14 @@ const GiftValueSelector = ({ selectedValue, onSelectValue }: GiftValueSelectorPr
           {giftOptions.map((option, index) => (
             <button
               key={option.value}
-              onClick={() => onSelectValue(option.value, option.total)}
+              onClick={() => {
+                onSelectValue(option.value, option.total);
+              }}
               className={cn(
                 "group relative bg-card rounded-2xl p-6 text-center transition-all duration-500 border-2 cursor-pointer",
                 selectedValue === option.value
-                  ? "border-champagne shadow-glow"
-                  : "border-border/50 hover:border-champagne/40 hover:shadow-card",
+                  ? "border-champagne shadow-glow scale-[1.02]"
+                  : "border-border/50 hover:border-champagne/40 hover:shadow-card hover:-translate-y-1",
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               )}
               style={{ transitionDelay: `${200 + index * 50}ms` }}

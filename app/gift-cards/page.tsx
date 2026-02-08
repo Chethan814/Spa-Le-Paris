@@ -6,11 +6,9 @@ import Header from "@/components/shared/Header";
 import Footer from "@/components/shared/Footer";
 import GiftCardsHero from "@/components/giftcards/GiftCardsHero";
 import GiftValueSelector from "@/components/giftcards/GiftValueSelector";
-import GiftDetails from "@/components/giftcards/GiftDetails";
-import GiftPersonalization from "@/components/giftcards/GiftPersonalization";
-import GiftDelivery from "@/components/giftcards/GiftDelivery";
-import GiftPaymentSummary from "@/components/giftcards/GiftPaymentSummary";
+import GiftCardModal from "@/components/giftcards/GiftCardModal";
 import GiftSuccess from "@/components/giftcards/GiftSuccess";
+import GiftDetails from "@/components/giftcards/GiftDetails";
 
 export default function GiftCardsPage() {
     const router = useRouter();
@@ -18,20 +16,17 @@ export default function GiftCardsPage() {
     // Form State
     const [selectedValue, setSelectedValue] = useState<number | null>(null);
     const [selectedTotal, setSelectedTotal] = useState<number | null>(null);
-    const [recipientName, setRecipientName] = useState("");
-    const [senderName, setSenderName] = useState("");
-    const [message, setMessage] = useState("");
-    const [email, setEmail] = useState("");
-    const [whatsappNumber, setWhatsappNumber] = useState("");
-    const [sendViaWhatsapp, setSendViaWhatsapp] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Payment State
+    // Success State
     const [showSuccess, setShowSuccess] = useState(false);
     const [giftCode, setGiftCode] = useState("");
+    const [finalRecipientName, setFinalRecipientName] = useState("");
 
     const handleSelectValue = (value: number, total: number) => {
         setSelectedValue(value);
         setSelectedTotal(total);
+        setIsModalOpen(true);
     };
 
     const generateGiftCode = () => {
@@ -53,10 +48,11 @@ export default function GiftCardsPage() {
         });
     };
 
-    const handleProceedToPayment = () => {
-        // In a real implementation, this would integrate with a payment gateway
-        // For now, simulate a successful payment
+    const handleProceedToPayment = (data: { recipientName: string }) => {
+        // Simulating payment for now as per user request to focus on design
         setGiftCode(generateGiftCode());
+        setFinalRecipientName(data.recipientName);
+        setIsModalOpen(false);
         setShowSuccess(true);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
@@ -73,7 +69,7 @@ export default function GiftCardsPage() {
                     giftCode={giftCode}
                     value={selectedValue || 0}
                     expiryDate={getExpiryDate()}
-                    recipientName={recipientName}
+                    recipientName={finalRecipientName || "Recipient"}
                     onBackToHome={handleBackToHome}
                 />
                 <Footer />
@@ -89,31 +85,16 @@ export default function GiftCardsPage() {
                 selectedValue={selectedValue}
                 onSelectValue={handleSelectValue}
             />
-            <GiftDetails />
-            <GiftPersonalization
-                recipientName={recipientName}
-                senderName={senderName}
-                message={message}
-                selectedValue={selectedValue}
-                onRecipientNameChange={setRecipientName}
-                onSenderNameChange={setSenderName}
-                onMessageChange={setMessage}
-            />
-            <GiftDelivery
-                email={email}
-                whatsappNumber={whatsappNumber}
-                sendViaWhatsapp={sendViaWhatsapp}
-                onEmailChange={setEmail}
-                onWhatsappChange={setWhatsappNumber}
-                onWhatsappToggle={setSendViaWhatsapp}
-            />
-            <GiftPaymentSummary
+
+            <GiftCardModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
                 selectedValue={selectedValue}
                 selectedTotal={selectedTotal}
-                recipientName={recipientName}
-                email={email}
                 onProceedToPayment={handleProceedToPayment}
             />
+            <GiftDetails />
+
             <Footer />
         </main>
     );
