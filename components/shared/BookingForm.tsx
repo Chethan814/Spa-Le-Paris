@@ -29,7 +29,7 @@ import {
     formSchema,
     FormValues,
     services,
-    durations,
+    serviceOptions,
     locations,
     timeSlots
 } from "@/components/booking/booking-constants";
@@ -62,6 +62,15 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
         },
     });
 
+    const selectedService = form.watch("service");
+    const selectedDuration = form.watch("duration");
+
+    const availableDurations = selectedService && serviceOptions[selectedService]
+        ? serviceOptions[selectedService]
+        : [];
+
+    const currentPrice = availableDurations.find(opt => opt.duration === selectedDuration)?.price;
+
     useEffect(() => {
         form.reset({
             fullName: "",
@@ -76,11 +85,21 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
         });
     }, [prefillData, form]);
 
+    // Reset duration when service changes if the current duration is not valid for the new service
+    useEffect(() => {
+        if (selectedService && selectedDuration) {
+            const isValidDuration = serviceOptions[selectedService]?.some(opt => opt.duration === selectedDuration);
+            if (!isValidDuration) {
+                form.setValue("duration", "");
+            }
+        }
+    }, [selectedService, selectedDuration, form]);
+
     async function onSubmit(values: FormValues) {
         setIsSubmitting(true);
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Booking Request:", values);
+        console.log("Booking Request:", { ...values, price: currentPrice });
         setIsSubmitting(false);
         onSuccess();
     }
@@ -167,15 +186,22 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                                     render={({ field }) => (
                                         <FormItem className="space-y-1">
                                             <FormLabel className="text-[11px]">Duration</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                value={field.value}
+                                                disabled={!selectedService}
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger className="h-9 bg-white/50 border-sand text-sm">
-                                                        <SelectValue placeholder="Select Duration" />
+                                                        <SelectValue placeholder={selectedService ? "Select Duration" : "Select Service First"} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent className="bg-white border-sand">
-                                                    {durations.map((d) => (
-                                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                                    {availableDurations.map((opt) => (
+                                                        <SelectItem key={opt.duration} value={opt.duration}>
+                                                            {opt.duration}
+                                                        </SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>
@@ -184,6 +210,15 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                                     )}
                                 />
                             </div>
+
+                            {/* Price Display */}
+                            {currentPrice && (
+                                <div className="bg-champagne/10 border border-champagne/20 rounded-md p-3 flex justify-between items-center animate-fade-in">
+                                    <span className="text-xs uppercase tracking-widest text-mud font-semibold">Estimated Price</span>
+                                    <span className="text-lg font-heading text-champagne-dark">{currentPrice}</span>
+                                </div>
+                            )}
+
                             <FormField
                                 control={form.control}
                                 name="location"
@@ -328,3 +363,4 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
         </Form>
     );
 }
+

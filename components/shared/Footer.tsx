@@ -89,7 +89,7 @@ const Footer = () => {
               Treatments
             </h4>
             <ul className="space-y-3">
-              {["Body Therapy", "Facial Rituals", "Scrub & Polish", "Couple Spa", "Day Retreat"].map(
+              {["Body Therapy", "Facial Rituals", "Scrub & Polish", "Day Retreat"].map(
                 (link) => (
                   <li key={link}>
                     <Link

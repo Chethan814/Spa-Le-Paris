@@ -34,21 +34,65 @@ export const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>;
 
-export const services = [
-    "Classic Swedish therapy ",
-    "Aroma therapy ",
-    "Deep Tissue therapy ",
-    "Balinese therapy ",
-    "Signature therapy ",
-    "Foot Reflexology",
-    "Back Therapy",
-    "Hand, Neck & Shoulder Therapy",
-    "Face Reflexology",
-    "Essential Scrub",
-    "Signature Coffee Scrub",
-];
+export type PurchaseOption = {
+    duration: string;
+    price: string;
+};
 
-export const durations = ["30min", "45min", "60min", "90min", "120min"];
+export const serviceOptions: Record<string, PurchaseOption[]> = {
+    // Signature Therapies
+    "Classic Swedish therapy ": [
+        { duration: "60min", price: "₹3,500" },
+        { duration: "90min", price: "₹4,750" },
+        { duration: "120min", price: "₹6,200" },
+    ],
+    "Aroma therapy ": [
+        { duration: "60min", price: "₹3,000" },
+    ],
+    "Deep Tissue therapy ": [
+        { duration: "60min", price: "₹3,500" },
+        { duration: "90min", price: "₹4,750" },
+        { duration: "120min", price: "₹6,250" },
+    ],
+    "Balinese therapy ": [
+        { duration: "60min", price: "₹3,500" },
+        { duration: "90min", price: "₹4,750" },
+        { duration: "120min", price: "₹6,250" },
+    ],
+    "Signature therapy ": [
+        { duration: "60min", price: "₹3,500" },
+        { duration: "90min", price: "₹4,750" },
+        { duration: "120min", price: "₹6,250" },
+    ],
+
+    // Quick Services
+    "Foot Reflexology": [
+        { duration: "30min", price: "₹1,500" },
+        { duration: "60min", price: "₹2,600" },
+    ],
+    "Back Therapy": [
+        { duration: "30min", price: "₹1,500" },
+        { duration: "60min", price: "₹2,600" },
+    ],
+    "Hand, Neck & Shoulder Therapy": [
+        { duration: "30min", price: "₹1,500" },
+        { duration: "60min", price: "₹2,600" },
+    ],
+    "Face Reflexology": [
+        { duration: "30min", price: "₹1,500" },
+        { duration: "60min", price: "₹2,600" },
+    ],
+
+    // Body Scrubs
+    "Essential Scrub": [
+        { duration: "45min", price: "₹2,000" },
+    ],
+    "Signature Coffee Scrub": [
+        { duration: "45min", price: "₹3,000" },
+    ],
+};
+
+export const services = Object.keys(serviceOptions);
 
 export const locations = [
     "SPA LE PARIS - KALYAN NAGAR",
