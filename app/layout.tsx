@@ -18,7 +18,7 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
     title: "Spa Le Paris | Luxury Wellness Experience",
     description: "Experience the pinnacle of wellness and relaxation at Spa Le Paris. Premium body treatments, signature therapies, and exclusive memberships await you.",
-    keywords: "luxury spa, wellness, body therapy, massage, relaxation, premium spa treatments, Spa Le Paris",
+    keywords: "luxury spa, wellness, body therapy, therapy , relaxation, premium spa treatments, Spa Le Paris",
     authors: [{ name: "Spa Le Paris" }],
     alternates: {
         canonical: "https://www.spaleparis.com/",

@@ -35,11 +35,11 @@ export const formSchema = z.object({
 export type FormValues = z.infer<typeof formSchema>;
 
 export const services = [
-    "Classic Swedish Massage",
-    "Aromatherapy Massage",
-    "Deep Tissue Massage",
-    "Balinese Massage",
-    "Signature Massage",
+    "Classic Swedish therapy ",
+    "Aromatherapy therapy ",
+    "Deep Tissue therapy ",
+    "Balinese therapy ",
+    "Signature therapy ",
     "Foot Reflexology",
     "Back Therapy",
     "Hand, Neck & Shoulder Therapy",

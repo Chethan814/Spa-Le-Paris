@@ -8,32 +8,32 @@ import { useBooking } from "@/context/BookingContext";
 
 
 const categories = {
-  "signature-massages": {
-    label: "Signature Massages",
+  "signature-therapy s": {
+    label: "Signature therapy s",
     description: "Body Therapy",
     items: [
       {
-        name: "Classic Swedish Massage",
+        name: "Classic Swedish therapy ",
         prices: [
           { duration: "60min", price: "₹3500" },
           { duration: "90min", price: "₹4750" },
           { duration: "120min", price: "₹6200" },
         ],
-        description: "A calming full-body massage using long, flowing strokes to relax muscles and improve circulation.",
+        description: "A calming full-body therapy  using long, flowing strokes to relax muscles and improve circulation.",
         bestFor: "Reducing Stress, Improving Sleep, and Easing Everyday Fatigue",
       },
       {
-        name: "Aromatherapy Massage",
+        name: "Aromatherapy therapy ",
         prices: [
           { duration: "60min", price: "₹3500" },
           { duration: "90min", price: "₹4250" },
           { duration: "120min", price: "₹5500" },
         ],
-        description: "A gentle massage combined with essential oils to relax the body and calm the mind.",
+        description: "A gentle therapy  combined with essential oils to relax the body and calm the mind.",
         bestFor: "Emotional Stress, Burnout, and Mental Fatigue",
       },
       {
-        name: "Deep Tissue Massage",
+        name: "Deep Tissue therapy ",
         prices: [
           { duration: "60min", price: "₹3500" },
           { duration: "90min", price: "₹4750" },
@@ -43,7 +43,7 @@ const categories = {
         bestFor: "Soreness, Stiffness, or After Intense Physical Activity",
       },
       {
-        name: "Balinese Massage",
+        name: "Balinese therapy ",
         prices: [
           { duration: "60min", price: "₹3500" },
           { duration: "90min", price: "₹4750" },
@@ -53,13 +53,13 @@ const categories = {
         bestFor: "Muscle Recovery, Improving Energy Flow, and Easing Body Heaviness",
       },
       {
-        name: "Signature Massage",
+        name: "Signature therapy ",
         prices: [
           { duration: "60min", price: "₹3500" },
           { duration: "90min", price: "₹4750" },
           { duration: "120min", price: "₹6250" },
         ],
-        description: "A calming full-body massage using long, flowing strokes to relax muscles and improve circulation.",
+        description: "A calming full-body therapy  using long, flowing strokes to relax muscles and improve circulation.",
         bestFor: "Reducing Stress, Improving Sleep, and Easing Everyday Fatigue",
       },
     ],
@@ -83,7 +83,7 @@ const categories = {
           { duration: "30min", price: "₹1500" },
           { duration: "60min", price: "₹2600" },
         ],
-        description: "A targeted massage for the upper and lower back to ease stiffness and daily stress.",
+        description: "A targeted therapy  for the upper and lower back to ease stiffness and daily stress.",
         bestFor: "People with Desk Jobs, Long Hours of Sitting, or Posture-Related Tension",
       },
       {
@@ -132,7 +132,7 @@ const categories = {
 
 const PackagesSection = () => {
   const { openBooking } = useBooking();
-  const [activeTab, setActiveTab] = useState("signature-massages");
+  const [activeTab, setActiveTab] = useState("signature-therapy s");
   const sectionRef = useRef<HTMLDivElement>(null);
 
 
@@ -161,7 +161,7 @@ const PackagesSection = () => {
         </div>
 
         <Tabs
-          defaultValue="signature-massages"
+          defaultValue="signature-therapy s"
           value={activeTab}
           onValueChange={setActiveTab}
           className="w-full max-w-5xl mx-auto"

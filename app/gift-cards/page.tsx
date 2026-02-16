@@ -29,15 +29,6 @@ export default function GiftCardsPage() {
         setIsModalOpen(true);
     };
 
-    const generateGiftCode = () => {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let code = "SLP-";
-        for (let i = 0; i < 8; i++) {
-            code += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return code;
-    };
-
     const getExpiryDate = () => {
         const date = new Date();
         date.setMonth(date.getMonth() + 3);
@@ -48,9 +39,8 @@ export default function GiftCardsPage() {
         });
     };
 
-    const handleProceedToPayment = (data: { recipientName: string }) => {
-        // Simulating payment for now as per user request to focus on design
-        setGiftCode(generateGiftCode());
+    const handleProceedToPayment = (data: { recipientName: string; giftCode: string }) => {
+        setGiftCode(data.giftCode);
         setFinalRecipientName(data.recipientName);
         setIsModalOpen(false);
         setShowSuccess(true);

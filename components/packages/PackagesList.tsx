@@ -9,33 +9,33 @@ import { useBooking } from "@/context/BookingContext";
 
 // Data Structure with badges
 const categories = {
-    "signature-massages": {
-        label: "Signature Massages",
+    "signature-therapy s": {
+        label: "Signature therapy s",
         description: "Body Therapy",
         items: [
             {
-                name: "Classic Swedish Massage",
+                name: "Classic Swedish therapy ",
                 badge: "Most Booked",
                 prices: [
                     { duration: "60min", price: "₹3,500" },
                     { duration: "90min", price: "₹4,750" },
                     { duration: "120min", price: "₹6,200" },
                 ],
-                description: "A calming full-body massage using long, flowing strokes to relax muscles and improve circulation.",
+                description: "A calming full-body therapy  using long, flowing strokes to relax muscles and improve circulation.",
                 bestFor: "Reducing Stress, Improving Sleep, and Easing Everyday Fatigue",
             },
             {
-                name: "Aromatherapy Massage",
+                name: "Aromatherapy therapy ",
                 prices: [
                     { duration: "60min", price: "₹3,500" },
                     { duration: "90min", price: "₹4,250" },
                     { duration: "120min", price: "₹5,500" },
                 ],
-                description: "A gentle massage combined with essential oils to relax the body and calm the mind.",
+                description: "A gentle therapy  combined with essential oils to relax the body and calm the mind.",
                 bestFor: "Emotional Stress, Burnout, and Mental Fatigue",
             },
             {
-                name: "Deep Tissue Massage",
+                name: "Deep Tissue therapy ",
                 badge: "Recommended",
                 prices: [
                     { duration: "60min", price: "₹3,500" },
@@ -46,7 +46,7 @@ const categories = {
                 bestFor: "Soreness, Stiffness, or After Intense Physical Activity",
             },
             {
-                name: "Balinese Massage",
+                name: "Balinese therapy ",
                 prices: [
                     { duration: "60min", price: "₹3,500" },
                     { duration: "90min", price: "₹4,750" },
@@ -56,7 +56,7 @@ const categories = {
                 bestFor: "Muscle Recovery, Improving Energy Flow, and Easing Body Heaviness",
             },
             {
-                name: "Signature Massage",
+                name: "Signature therapy ",
                 badge: "Signature",
                 prices: [
                     { duration: "60min", price: "₹3,500" },
@@ -88,7 +88,7 @@ const categories = {
                     { duration: "30min", price: "₹1,500" },
                     { duration: "60min", price: "₹2,600" },
                 ],
-                description: "A targeted massage for the upper and lower back to ease stiffness and daily stress.",
+                description: "A targeted therapy  for the upper and lower back to ease stiffness and daily stress.",
                 bestFor: "Desk Jobs, Long Hours of Sitting, or Posture-Related Tension",
             },
             {
@@ -260,7 +260,7 @@ const PackageCard = ({ item, index }: { item: PackageItem; index: number }) => {
 };
 
 const PackagesList = () => {
-    const [activeCategory, setActiveCategory] = useState("signature-massages");
+    const [activeCategory, setActiveCategory] = useState("signature-therapy s");
     const [isTransitioning, setIsTransitioning] = useState(false);
 
     const handleCategoryChange = (value: string) => {
@@ -276,7 +276,7 @@ const PackagesList = () => {
         <section className="py-20 md:py-32 bg-gradient-to-b from-background via-secondary/20 to-background">
             <div className="container mx-auto px-6">
                 <Tabs
-                    defaultValue="signature-massages"
+                    defaultValue="signature-therapy s"
                     value={activeCategory}
                     onValueChange={handleCategoryChange}
                 >
