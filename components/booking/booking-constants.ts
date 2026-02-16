@@ -36,7 +36,7 @@ export type FormValues = z.infer<typeof formSchema>;
 
 export const services = [
     "Classic Swedish therapy ",
-    "Aromatherapy therapy ",
+    "Aroma therapy ",
     "Deep Tissue therapy ",
     "Balinese therapy ",
     "Signature therapy ",

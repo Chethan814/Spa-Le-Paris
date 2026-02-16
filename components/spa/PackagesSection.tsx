@@ -9,7 +9,7 @@ import { useBooking } from "@/context/BookingContext";
 
 const categories = {
   "signature-therapy s": {
-    label: "Signature therapy s",
+    label: "Signature therapy’s",
     description: "Body Therapy",
     items: [
       {
@@ -23,7 +23,7 @@ const categories = {
         bestFor: "Reducing Stress, Improving Sleep, and Easing Everyday Fatigue",
       },
       {
-        name: "Aromatherapy therapy ",
+        name: "Aroma therapy ",
         prices: [
           { duration: "60min", price: "₹3500" },
           { duration: "90min", price: "₹4250" },

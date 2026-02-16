@@ -7,7 +7,7 @@ import { Sparkles, Heart, Flower2, ArrowRight } from "lucide-react";
 const serviceCategories = [
     {
         id: "therapy s",
-        title: "Signature therapy s",
+        title: "Signature therapy’s",
         subtitle: "Full-body relaxation & therapy",
         description: "Ancient techniques meet modern wellness for complete mind-body restoration",
         icon: Heart,

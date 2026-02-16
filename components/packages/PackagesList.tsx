@@ -10,7 +10,7 @@ import { useBooking } from "@/context/BookingContext";
 // Data Structure with badges
 const categories = {
     "signature-therapy s": {
-        label: "Signature therapy s",
+        label: "Signature therapy’s",
         description: "Body Therapy",
         items: [
             {
@@ -25,11 +25,9 @@ const categories = {
                 bestFor: "Reducing Stress, Improving Sleep, and Easing Everyday Fatigue",
             },
             {
-                name: "Aromatherapy therapy ",
+                name: "Aroma therapy ",
                 prices: [
-                    { duration: "60min", price: "₹3,500" },
-                    { duration: "90min", price: "₹4,250" },
-                    { duration: "120min", price: "₹5,500" },
+                    { duration: "60min", price: "₹3,000" },
                 ],
                 description: "A gentle therapy  combined with essential oils to relax the body and calm the mind.",
                 bestFor: "Emotional Stress, Burnout, and Mental Fatigue",
