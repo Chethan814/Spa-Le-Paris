@@ -7,6 +7,11 @@ export type BookingPrefillData = {
     package?: string;
     duration?: string;
     location?: string;
+    selectedPackages?: Array<{
+        name: string;
+        duration: string;
+        price: number;
+    }>;
 };
 
 interface BookingContextType {

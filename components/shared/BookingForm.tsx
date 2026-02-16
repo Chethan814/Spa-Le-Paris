@@ -40,12 +40,18 @@ interface BookingFormProps {
         package?: string;
         duration?: string;
         location?: string;
+        selectedPackages?: Array<{
+            name: string;
+            duration: string;
+            price: number;
+        }>;
     };
     onSuccess: () => void;
 }
 
 export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const hasSelectedPackages = prefillData.selectedPackages && prefillData.selectedPackages.length > 0;
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -59,6 +65,7 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
             timeSlot: "",
             date: "",
             notes: "",
+            selectedPackages: hasSelectedPackages ? prefillData.selectedPackages : undefined,
         },
     });
 
@@ -69,7 +76,30 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
         ? serviceOptions[selectedService]
         : [];
 
-    const currentPrice = availableDurations.find(opt => opt.duration === selectedDuration)?.price;
+    // Calculate price for single service
+    const singleServicePrice = availableDurations.find(opt => opt.duration === selectedDuration)?.price;
+
+    // Calculate totals for packages
+    const calculatePackageTotals = () => {
+        if (!prefillData.selectedPackages) return { subtotal: 0, discountPercent: 0, discountAmount: 0, total: 0 };
+
+        const count = prefillData.selectedPackages.length;
+        const subtotal = prefillData.selectedPackages.reduce((sum, pkg) => sum + pkg.price, 0);
+
+        // Discount Logic: 10% for 2, 15% for 3+
+        let discountPercent = 0;
+        if (count >= 3) discountPercent = 0.15;
+        else if (count === 2) discountPercent = 0.10;
+
+        const discountAmount = subtotal * discountPercent;
+        const total = subtotal - discountAmount;
+
+        return { subtotal, discountPercent, discountAmount, total };
+    };
+
+    const { subtotal, discountPercent, discountAmount, total: packageTotal } = calculatePackageTotals();
+
+
 
     useEffect(() => {
         form.reset({
@@ -82,24 +112,38 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
             timeSlot: "",
             date: "",
             notes: "",
+            selectedPackages: prefillData.selectedPackages,
         });
     }, [prefillData, form]);
 
-    // Reset duration when service changes if the current duration is not valid for the new service
+    // Reset duration when service changes (only for single service mode)
     useEffect(() => {
-        if (selectedService && selectedDuration) {
+        if (!hasSelectedPackages && selectedService && selectedDuration) {
             const isValidDuration = serviceOptions[selectedService]?.some(opt => opt.duration === selectedDuration);
             if (!isValidDuration) {
                 form.setValue("duration", "");
             }
         }
-    }, [selectedService, selectedDuration, form]);
+    }, [selectedService, selectedDuration, form, hasSelectedPackages]);
 
     async function onSubmit(values: FormValues) {
         setIsSubmitting(true);
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Booking Request:", { ...values, price: currentPrice });
+
+        const submissionData = {
+            ...values,
+            // Include calculated pricing logic in the simulated payload
+            pricing: hasSelectedPackages ? {
+                subtotal,
+                discount: discountAmount,
+                total: packageTotal
+            } : {
+                total: singleServicePrice
+            }
+        };
+
+        console.log("Booking Request:", submissionData);
         setIsSubmitting(false);
         onSuccess();
     }
@@ -157,65 +201,102 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
 
                         <div className="space-y-3">
                             <h4 className="text-[10px] uppercase tracking-widest text-champagne font-semibold border-b border-sand/30 pb-1">Service Preference</h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <FormField
-                                    control={form.control}
-                                    name="service"
-                                    render={({ field }) => (
-                                        <FormItem className="space-y-1">
-                                            <FormLabel className="text-[11px]">Service / Package</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger className="h-9 bg-white/50 border-sand text-sm">
-                                                        <SelectValue placeholder="Select Service" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent className="bg-white border-sand">
-                                                    {services.map((s) => (
-                                                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage className="text-[10px]" />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="duration"
-                                    render={({ field }) => (
-                                        <FormItem className="space-y-1">
-                                            <FormLabel className="text-[11px]">Duration</FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                value={field.value}
-                                                disabled={!selectedService}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger className="h-9 bg-white/50 border-sand text-sm">
-                                                        <SelectValue placeholder={selectedService ? "Select Duration" : "Select Service First"} />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent className="bg-white border-sand">
-                                                    {availableDurations.map((opt) => (
-                                                        <SelectItem key={opt.duration} value={opt.duration}>
-                                                            {opt.duration}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage className="text-[10px]" />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
 
-                            {/* Price Display */}
-                            {currentPrice && (
-                                <div className="bg-champagne/10 border border-champagne/20 rounded-md p-3 flex justify-between items-center animate-fade-in">
+                            {hasSelectedPackages ? (
+                                // Multi-Package View
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        {prefillData.selectedPackages?.map((pkg, idx) => (
+                                            <div key={idx} className="flex justify-between items-center text-sm p-2 bg-secondary/30 rounded-md border border-sand/30">
+                                                <div>
+                                                    <p className="font-medium text-charcoal">{pkg.name}</p>
+                                                    <p className="text-xs text-muted-foreground">{pkg.duration}</p>
+                                                </div>
+                                                <span className="font-body text-charcoal-light">₹{pkg.price.toLocaleString()}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Pricing Summary */}
+                                    <div className="bg-champagne/5 border border-champagne/20 rounded-md p-3 space-y-2">
+                                        <div className="flex justify-between items-center text-xs text-muted-foreground">
+                                            <span>Subtotal</span>
+                                            <span>₹{subtotal.toLocaleString()}</span>
+                                        </div>
+                                        {discountPercent > 0 && (
+                                            <div className="flex justify-between items-center text-xs text-champagne-dark font-medium">
+                                                <span>Bundle Discount ({(discountPercent * 100).toFixed(0)}%)</span>
+                                                <span>-₹{discountAmount.toLocaleString()}</span>
+                                            </div>
+                                        )}
+                                        <div className="flex justify-between items-center pt-2 border-t border-champagne/20">
+                                            <span className="text-xs uppercase tracking-widest text-mud font-semibold">Total Estimate</span>
+                                            <span className="text-lg font-heading text-champagne-dark">₹{packageTotal.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                // Single Service View
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <FormField
+                                        control={form.control}
+                                        name="service"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-1">
+                                                <FormLabel className="text-[11px]">Service / Package</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger className="h-9 bg-white/50 border-sand text-sm">
+                                                            <SelectValue placeholder="Select Service" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent className="bg-white border-sand">
+                                                        {services.map((s) => (
+                                                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage className="text-[10px]" />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="duration"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-1">
+                                                <FormLabel className="text-[11px]">Duration</FormLabel>
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                    value={field.value}
+                                                    disabled={!selectedService}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger className="h-9 bg-white/50 border-sand text-sm">
+                                                            <SelectValue placeholder={selectedService ? "Select Duration" : "Select Service First"} />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent className="bg-white border-sand">
+                                                        {availableDurations.map((opt) => (
+                                                            <SelectItem key={opt.duration} value={opt.duration}>
+                                                                {opt.duration}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage className="text-[10px]" />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            )}
+
+                            {/* Price Display for Single Service */}
+                            {!hasSelectedPackages && singleServicePrice && (
+                                <div className="bg-champagne/10 border border-champagne/20 rounded-md p-3 flex justify-between items-center animate-fade-in mt-3">
                                     <span className="text-xs uppercase tracking-widest text-mud font-semibold">Estimated Price</span>
-                                    <span className="text-lg font-heading text-champagne-dark">{currentPrice}</span>
+                                    <span className="text-lg font-heading text-champagne-dark">₹{singleServicePrice.toLocaleString()}</span>
                                 </div>
                             )}
                         </div>
