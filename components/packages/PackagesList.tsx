@@ -151,17 +151,21 @@ interface SelectedPackage {
 const PackageCard = ({
     item,
     index,
-    isSelected,
+    selectedPackages,
     onToggle
 }: {
     item: PackageItem;
     index: number;
-    isSelected: boolean;
+    selectedPackages: SelectedPackage[];
     onToggle: (duration: string, price: number) => void;
 }) => {
     const [selectedDuration, setSelectedDuration] = useState(item.prices[0].duration);
     const [currentPrice, setCurrentPrice] = useState(item.prices[0].price);
     const [isAnimating, setIsAnimating] = useState(false);
+
+    const isSelected = selectedPackages.some(
+        p => p.name === item.name && p.duration === selectedDuration
+    );
 
     const getBadgeStyle = (badge: string) => {
         switch (badge) {
@@ -322,9 +326,9 @@ const PackagesList = () => {
 
     const togglePackage = (name: string, duration: string, price: number) => {
         setSelectedPackages(prev => {
-            const exists = prev.find(p => p.name === name);
+            const exists = prev.find(p => p.name === name && p.duration === duration);
             if (exists) {
-                return prev.filter(p => p.name !== name);
+                return prev.filter(p => !(p.name === name && p.duration === duration));
             }
             return [...prev, { name, duration, price }];
         });
@@ -395,7 +399,7 @@ const PackagesList = () => {
                                         <PackageCard
                                             item={item as PackageItem}
                                             index={index}
-                                            isSelected={selectedPackages.some(p => p.name === item.name)}
+                                            selectedPackages={selectedPackages}
                                             onToggle={(duration, price) => togglePackage(item.name, duration, price)}
                                         />
                                     </div>
@@ -411,7 +415,7 @@ const PackagesList = () => {
                 "fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 transform",
                 selectedPackages.length > 0 ? "translate-y-0" : "translate-y-full"
             )}>
-                <div className="bg-white/90 backdrop-blur-md border-t border-champagne/30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-6 pt-4 px-6 md:pb-8 md:pt-6">
+                <div className="bg-white/90 backdrop-blur-sm border-t border-champagne/20 shadow-[0_-2px_10px_rgba(0,0,0,0.03)] pb-6 pt-4 px-6 md:pb-8 md:pt-6">
                     <div className="container mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-start">
                             <div className="flex flex-col">
@@ -447,7 +451,7 @@ const PackagesList = () => {
                         {discountPercent > 0 && (
                             <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-champagne/10 border border-champagne/20 rounded-full">
                                 <span className="text-xs font-medium text-champagne-dark">
-                                    {discountPercent * 100}% Bundle Savings Applied
+                                    {discountPercent * 100}% Bundled Experience Benefit
                                 </span>
                             </div>
                         )}

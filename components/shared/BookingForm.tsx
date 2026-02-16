@@ -131,16 +131,37 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
+        // Recalculate totals for submission (Server-side simulation)
+        let finalPricing = {};
+
+        if (hasSelectedPackages && values.selectedPackages) {
+            const pkgs = values.selectedPackages;
+            const count = pkgs.length;
+            const sub = pkgs.reduce((sum, p) => sum + p.price, 0);
+
+            let discPct = 0;
+            if (count >= 3) discPct = 0.15;
+            else if (count === 2) discPct = 0.10;
+
+            const discAmt = sub * discPct;
+
+            finalPricing = {
+                subtotal: sub,
+                discount: discAmt,
+                total: sub - discAmt
+            };
+        } else {
+            // Re-verify single service price
+            // In a real app, this would fetch from DB. Here we look up constants.
+            // For now, using the render-scope price is acceptable as constants are static.
+            finalPricing = {
+                total: singleServicePrice
+            };
+        }
+
         const submissionData = {
             ...values,
-            // Include calculated pricing logic in the simulated payload
-            pricing: hasSelectedPackages ? {
-                subtotal,
-                discount: discountAmount,
-                total: packageTotal
-            } : {
-                total: singleServicePrice
-            }
+            pricing: finalPricing
         };
 
         console.log("Booking Request:", submissionData);
@@ -225,7 +246,7 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                                         </div>
                                         {discountPercent > 0 && (
                                             <div className="flex justify-between items-center text-xs text-champagne-dark font-medium">
-                                                <span>Bundle Discount ({(discountPercent * 100).toFixed(0)}%)</span>
+                                                <span>Bundled Experience Benefit ({(discountPercent * 100).toFixed(0)}%)</span>
                                                 <span>-₹{discountAmount.toLocaleString()}</span>
                                             </div>
                                         )}
