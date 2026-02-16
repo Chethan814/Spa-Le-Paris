@@ -218,36 +218,13 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                                     <span className="text-lg font-heading text-champagne-dark">{currentPrice}</span>
                                 </div>
                             )}
-
-                            <FormField
-                                control={form.control}
-                                name="location"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-1">
-                                        <FormLabel className="text-[11px]">Preferred Location</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="h-9 bg-white/50 border-sand text-sm">
-                                                    <SelectValue placeholder="Select Location" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className="bg-white border-sand">
-                                                {locations.map((l) => (
-                                                    <SelectItem key={l} value={l}>{l}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage className="text-[10px]" />
-                                    </FormItem>
-                                )}
-                            />
                         </div>
                     </div>
 
                     {/* Right Column: Time & Notes */}
                     <div className="space-y-4 sm:space-y-6">
                         <div className="space-y-3">
-                            <h4 className="text-[10px] uppercase tracking-widest text-champagne font-semibold border-b border-sand/30 pb-1">Scheduling</h4>
+                            <h4 className="text-[10px] uppercase tracking-widest text-champagne font-semibold border-b border-sand/30 pb-1">Scheduling & Location</h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <FormField
                                     control={form.control}
@@ -321,6 +298,28 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                                     )}
                                 />
                             </div>
+                            <FormField
+                                control={form.control}
+                                name="location"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-1">
+                                        <FormLabel className="text-[11px]">Preferred Location</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger className="h-9 bg-white/50 border-sand text-sm">
+                                                    <SelectValue placeholder="Select Location" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent className="bg-white border-sand">
+                                                {locations.map((l) => (
+                                                    <SelectItem key={l} value={l}>{l}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage className="text-[10px]" />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
 
                         <div className="space-y-3">
