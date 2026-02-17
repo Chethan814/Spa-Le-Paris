@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 const generateGiftCode = async () => {
+    const supabase = getSupabase();
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Removed ambiguous chars I, O, 0, 1
     let code = "SLP-";
     for (let i = 0; i < 8; i++) {
@@ -25,6 +26,7 @@ const generateGiftCode = async () => {
 
 export async function POST(req: NextRequest) {
     try {
+        const supabase = getSupabase();
         const {
             razorpay_order_id,
             razorpay_payment_id,

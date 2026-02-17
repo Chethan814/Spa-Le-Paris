@@ -41,3 +41,47 @@ alter table gift_cards enable row level security;
 -- Policy: Allow public to insert (for callback/webhook purposes if needed, though strictly our API handles it)
 -- Since we are using service role or anon key with custom logic, adjust policies as needed.
 -- For now, if using standard client, you might want to restrict read access.
+
+-- Create Bookings Table
+create table bookings (
+  id uuid default gen_random_uuid() primary key,
+  full_name text not null,
+  phone text not null,
+  email text,
+  service text,
+  duration text,
+  location text,
+  preferred_date text,
+  time_slot text,
+  notes text,
+  selected_packages jsonb,
+  pricing jsonb,
+  status text not null default 'PENDING',
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Create Franchise Inquiries Table
+create table franchise_inquiries (
+  id uuid default gen_random_uuid() primary key,
+  full_name text not null,
+  email text not null,
+  phone text not null,
+  city text not null,
+  background text not null,
+  interest text not null,
+  status text not null default 'NEW',
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Enable RLS for new tables
+alter table bookings enable row level security;
+alter table franchise_inquiries enable row level security;
+
+-- Allow public inserts (anon key)
+create policy "Allow public insert on bookings"
+  on bookings for insert
+  with check (true);
+
+create policy "Allow public insert on franchise_inquiries"
+  on franchise_inquiries for insert
+  with check (true);

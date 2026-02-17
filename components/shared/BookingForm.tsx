@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
+import { getSupabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -126,47 +128,78 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
         }
     }, [selectedService, selectedDuration, form, hasSelectedPackages]);
 
+    const { toast } = useToast();
+
     async function onSubmit(values: FormValues) {
         setIsSubmitting(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        // Recalculate totals for submission (Server-side simulation)
-        let finalPricing = {};
+        try {
+            // Calculate final pricing
+            let finalPricing = {};
 
-        if (hasSelectedPackages && values.selectedPackages) {
-            const pkgs = values.selectedPackages;
-            const count = pkgs.length;
-            const sub = pkgs.reduce((sum, p) => sum + p.price, 0);
+            if (hasSelectedPackages && values.selectedPackages) {
+                const pkgs = values.selectedPackages;
+                const count = pkgs.length;
+                const sub = pkgs.reduce((sum, p) => sum + p.price, 0);
 
-            let discPct = 0;
-            if (count >= 3) discPct = 0.15;
-            else if (count === 2) discPct = 0.10;
+                let discPct = 0;
+                if (count >= 3) discPct = 0.15;
+                else if (count === 2) discPct = 0.10;
 
-            const discAmt = sub * discPct;
+                const discAmt = sub * discPct;
 
-            finalPricing = {
-                subtotal: sub,
-                discount: discAmt,
-                total: sub - discAmt
-            };
-        } else {
-            // Re-verify single service price
-            // In a real app, this would fetch from DB. Here we look up constants.
-            // For now, using the render-scope price is acceptable as constants are static.
-            finalPricing = {
-                total: singleServicePrice
-            };
+                finalPricing = {
+                    subtotal: sub,
+                    discount: discAmt,
+                    total: sub - discAmt
+                };
+            } else {
+                finalPricing = {
+                    total: singleServicePrice
+                };
+            }
+
+            // Store in Supabase
+            const supabase = getSupabase();
+            const { error } = await supabase.from("bookings").insert([
+                {
+                    full_name: values.fullName,
+                    phone: values.phone,
+                    email: values.email || null,
+                    service: values.service || null,
+                    duration: values.duration || null,
+                    location: values.location || null,
+                    preferred_date: values.date || null,
+                    time_slot: values.timeSlot || null,
+                    notes: values.notes || null,
+                    selected_packages: values.selectedPackages || null,
+                    pricing: finalPricing,
+                    status: "PENDING",
+                },
+            ]);
+
+            if (error) {
+                console.error("Booking Error:", error);
+                toast({
+                    title: "Booking Failed",
+                    description: "Something went wrong. Please try again or contact us directly.",
+                    variant: "destructive",
+                });
+                setIsSubmitting(false);
+                return;
+            }
+
+            setIsSubmitting(false);
+            onSuccess();
+        } catch (err) {
+            console.error("Booking Error:", err);
+            toast({
+                title: "Booking Failed",
+                description: "Something went wrong. Please try again or contact us directly.",
+                variant: "destructive",
+            });
+            setIsSubmitting(false);
         }
-
-        const submissionData = {
-            ...values,
-            pricing: finalPricing
-        };
-
-        console.log("Booking Request:", submissionData);
-        setIsSubmitting(false);
-        onSuccess();
     }
 
     return (

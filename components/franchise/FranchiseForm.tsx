@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { getSupabase } from "@/lib/supabase";
 
 const backgroundOptions = [
   "Hospitality & Hotels",
@@ -58,23 +59,54 @@ const FranchiseForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const supabase = getSupabase();
+      const { error } = await supabase.from("franchise_inquiries").insert([
+        {
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          city: formData.city,
+          background: formData.background,
+          interest: formData.interest,
+          status: "NEW",
+        },
+      ]);
 
-    toast({
-      title: "Application Received",
-      description:
-        "Thank you for your interest. We will review your application and be in touch soon.",
-    });
+      if (error) {
+        console.error("Franchise Inquiry Error:", error);
+        toast({
+          title: "Submission Failed",
+          description: "Something went wrong. Please try again or contact us directly.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
-    setFormData({
-      fullName: "",
-      email: "",
-      phone: "",
-      city: "",
-      background: "",
-      interest: "",
-    });
+      toast({
+        title: "Application Received",
+        description:
+          "Thank you for your interest. We will review your application and be in touch soon.",
+      });
+
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        city: "",
+        background: "",
+        interest: "",
+      });
+    } catch (err) {
+      console.error("Franchise Inquiry Error:", err);
+      toast({
+        title: "Submission Failed",
+        description: "Something went wrong. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    }
+
     setIsSubmitting(false);
   };
 

@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
-import { supabase } from "@/lib/supabase";
-
-const razorpay = new Razorpay({
-    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-    key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+import { getSupabase } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
     try {
+        const razorpay = new Razorpay({
+            key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+            key_secret: process.env.RAZORPAY_KEY_SECRET!,
+        });
+
         const { amount, currency = "INR", receipt, notes } = await req.json();
 
         // 1. Server-side Amount Validation
@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
         const order = await razorpay.orders.create(options);
 
         // 3. Store Order in Supabase
+        const supabase = getSupabase();
         const { error } = await supabase.from("orders").insert([
             {
                 id: order.id,
