@@ -60,28 +60,16 @@ const FranchiseForm = () => {
     setIsSubmitting(true);
 
     try {
-      const supabase = getSupabase();
-      const { error } = await supabase.from("franchise_inquiries").insert([
-        {
-          full_name: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-          city: formData.city,
-          background: formData.background,
-          interest: formData.interest,
-          status: "NEW",
-        },
-      ]);
+      const response = await fetch("/api/franchise", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-      if (error) {
-        console.error("Franchise Inquiry Error:", error);
-        toast({
-          title: "Submission Failed",
-          description: "Something went wrong. Please try again or contact us directly.",
-          variant: "destructive",
-        });
-        setIsSubmitting(false);
-        return;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Submission failed");
       }
 
       toast({
@@ -98,11 +86,11 @@ const FranchiseForm = () => {
         background: "",
         interest: "",
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Franchise Inquiry Error:", err);
       toast({
         title: "Submission Failed",
-        description: "Something went wrong. Please try again or contact us directly.",
+        description: err.message || "Something went wrong. Please try again or contact us directly.",
         variant: "destructive",
       });
     }

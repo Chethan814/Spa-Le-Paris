@@ -159,43 +159,29 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                 };
             }
 
-            // Store in Supabase
-            const supabase = getSupabase();
-            const { error } = await supabase.from("bookings").insert([
-                {
-                    full_name: values.fullName,
-                    phone: values.phone,
-                    email: values.email || null,
-                    service: values.service || null,
-                    duration: values.duration || null,
-                    location: values.location || null,
-                    preferred_date: values.date || null,
-                    time_slot: values.timeSlot || null,
-                    notes: values.notes || null,
-                    selected_packages: values.selectedPackages || null,
+            // Call server-side API for storage and email
+            const response = await fetch("/api/bookings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...values,
                     pricing: finalPricing,
-                    status: "PENDING",
-                },
-            ]);
+                }),
+            });
 
-            if (error) {
-                console.error("Booking Error:", error);
-                toast({
-                    title: "Booking Failed",
-                    description: error.message || "Something went wrong. Please try again or contact us directly.",
-                    variant: "destructive",
-                });
-                setIsSubmitting(false);
-                return;
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Booking failed");
             }
 
             setIsSubmitting(false);
             onSuccess();
-        } catch (err) {
+        } catch (err: any) {
             console.error("Booking Error:", err);
             toast({
                 title: "Booking Failed",
-                description: "Something went wrong. Please try again or contact us directly.",
+                description: err.message || "Something went wrong. Please try again or contact us directly.",
                 variant: "destructive",
             });
             setIsSubmitting(false);
