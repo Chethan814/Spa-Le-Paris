@@ -182,7 +182,7 @@ export function BookingForm({ prefillData, onSuccess }: BookingFormProps) {
                 console.error("Booking Error:", error);
                 toast({
                     title: "Booking Failed",
-                    description: "Something went wrong. Please try again or contact us directly.",
+                    description: error.message || "Something went wrong. Please try again or contact us directly.",
                     variant: "destructive",
                 });
                 setIsSubmitting(false);
