@@ -4,17 +4,23 @@ import { getSupabase } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
     try {
+        const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+        if (!keyId || !keySecret) {
+            console.error("Missing Razorpay Keys");
+            return NextResponse.json({ error: "Razorpay configuration missing" }, { status: 500 });
+        }
+
         const razorpay = new Razorpay({
-            key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-            key_secret: process.env.RAZORPAY_KEY_SECRET!,
+            key_id: keyId,
+            key_secret: keySecret,
         });
 
-        const { amount, currency = "INR", receipt, notes } = await req.json();
+        const body = await req.json();
+        const { amount, currency = "INR", receipt, notes } = body;
 
         // 1. Server-side Amount Validation
-        // We expect the frontend to send the amount in paise, but we should double check against the plan.
-        // For gift cards, we trust the value but ensure it's a valid number.
-        // In a stricter system, we might map IDs to fixed amounts.
         if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
             return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
         }
@@ -31,7 +37,7 @@ export async function POST(req: NextRequest) {
 
         // 3. Store Order in Supabase
         const supabase = getSupabase();
-        const { error } = await supabase.from("orders").insert([
+        const { error: supabaseError } = await supabase.from("orders").insert([
             {
                 id: order.id,
                 amount: Number(order.amount) / 100, // Store in rupees
@@ -43,14 +49,11 @@ export async function POST(req: NextRequest) {
             },
         ]);
 
-        if (error) {
-            console.error("Supabase Order Error:", error);
-            // We might choose to fail here or proceed with a warning log depending on criticality
-        }
+        if (supabaseError) console.error("Supabase Order Error:", supabaseError.message);
 
         return NextResponse.json(order);
-    } catch (error) {
-        console.error("Razorpay Order Error:", error);
+    } catch (error: any) {
+        console.error("Razorpay Order Error:", error.message);
         return NextResponse.json(
             { error: "Error creating order" },
             { status: 500 }

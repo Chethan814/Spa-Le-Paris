@@ -38,9 +38,23 @@ alter table orders enable row level security;
 alter table payments enable row level security;
 alter table gift_cards enable row level security;
 
--- Policy: Allow public to insert (for callback/webhook purposes if needed, though strictly our API handles it)
--- Since we are using service role or anon key with custom logic, adjust policies as needed.
--- For now, if using standard client, you might want to restrict read access.
+-- Policy: Allow public to insert (since the API handles validation)
+create policy "Allow public insert on orders"
+  on orders for insert
+  with check (true);
+
+create policy "Allow public insert on payments"
+  on payments for insert
+  with check (true);
+
+create policy "Allow public insert on gift_cards"
+  on gift_cards for insert
+  with check (true);
+
+-- Allow public read on gift_cards specifically for code verification
+create policy "Allow public select on gift_cards"
+  on gift_cards for select
+  using (true);
 
 -- Create Bookings Table
 create table bookings (

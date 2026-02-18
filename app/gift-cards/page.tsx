@@ -82,6 +82,10 @@ export default function GiftCardsPage() {
                 selectedValue={selectedValue}
                 selectedTotal={selectedTotal}
                 onProceedToPayment={handleProceedToPayment}
+                onPaymentError={(msg) => {
+                    console.error("Payment error reported to page:", msg);
+                    setIsModalOpen(true);
+                }}
             />
             <GiftDetails />
 

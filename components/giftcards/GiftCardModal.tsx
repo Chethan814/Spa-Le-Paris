@@ -19,6 +19,7 @@ interface GiftCardModalProps {
     selectedValue: number | null;
     selectedTotal: number | null;
     onProceedToPayment: (data: { recipientName: string; senderName: string; email: string; giftCode: string }) => void;
+    onPaymentError?: (message: string) => void;
 }
 
 declare global {
@@ -33,6 +34,7 @@ const GiftCardModal = ({
     selectedValue,
     selectedTotal,
     onProceedToPayment,
+    onPaymentError,
 }: GiftCardModalProps) => {
     const [recipientName, setRecipientName] = useState("");
     const [senderName, setSenderName] = useState("");
@@ -55,6 +57,12 @@ const GiftCardModal = ({
         setIsProcessing(true);
 
         try {
+            console.log("Initiating payment for amount:", selectedValue);
+            console.log("Key ID Check:", {
+                length: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.length || 0,
+                prefix: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.slice(0, 8)
+            });
+
             // 1. Create Order
             const response = await fetch("/api/razorpay/order", {
                 method: "POST",
@@ -62,6 +70,7 @@ const GiftCardModal = ({
                 body: JSON.stringify({
                     amount: selectedValue * 100, // Amount in paise
                     currency: "INR",
+                    receipt: `rcpt_${Date.now()}`,
                     notes: {
                         gift_value: selectedValue,
                         recipient_email: email,
@@ -71,13 +80,20 @@ const GiftCardModal = ({
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || "Failed to create order");
+                const errorData = await response.json();
+                console.error("Order Creation Failed:", errorData);
+                throw new Error(errorData.error || "Failed to create order");
             }
 
             const order = await response.json();
+            console.log("Order Created Successfully:", order);
 
             // 2. Initialize Razorpay
+            if (!window.Razorpay) {
+                console.error("Razorpay SDK not loaded");
+                throw new Error("Razorpay SDK not loaded. Please check your internet connection.");
+            }
+
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: order.amount,
@@ -86,6 +102,8 @@ const GiftCardModal = ({
                 description: `Gift Card - ${formatCurrency(selectedValue)}`,
                 order_id: order.id,
                 handler: async function (response: any) {
+                    console.log("Payment Success Handler Triggered", response);
+                    setIsProcessing(true); // Re-show loading if needed
                     try {
                         const verifyRes = await fetch("/api/razorpay/verify", {
                             method: "POST",
@@ -103,6 +121,7 @@ const GiftCardModal = ({
                         const verifyData = await verifyRes.json();
 
                         if (verifyData.success) {
+                            console.log("Payment Verified Successfully");
                             onProceedToPayment({
                                 recipientName,
                                 senderName,
@@ -110,11 +129,14 @@ const GiftCardModal = ({
                                 giftCode: verifyData.giftCode
                             });
                         } else {
+                            console.error("Verification Failed:", verifyData);
                             toast.error("Payment verification failed. Please contact support.");
                         }
                     } catch (error) {
+                        console.error("Verification Error:", error);
                         toast.error("Error verifying payment");
-                        console.error(error);
+                    } finally {
+                        setIsProcessing(false);
                     }
                 },
                 prefill: {
@@ -127,20 +149,38 @@ const GiftCardModal = ({
                 },
                 modal: {
                     ondismiss: function () {
+                        console.log("Razorpay modal dismissed");
                         setIsProcessing(false);
                     }
                 }
             };
 
-            const rzp = new window.Razorpay(options);
-            rzp.on("payment.failed", function (response: any) {
-                toast.error(response.error.description || "Payment failed");
-                setIsProcessing(false);
-            });
-            rzp.open();
+            console.log("Opening Razorpay with options:", { ...options, key: "MASKED" });
+
+            // CRITICAL FIX: Close Radix modal first to prevent focus trap
+            onClose();
+
+            // Wait for modal to unmount/close completely
+            setTimeout(() => {
+                try {
+                    const rzp = new window.Razorpay(options);
+                    rzp.on("payment.failed", function (response: any) {
+                        const errorMsg = response.error?.description || "Payment failed or was cancelled";
+                        toast.error(errorMsg);
+                        setIsProcessing(false);
+                        if (onPaymentError) onPaymentError(errorMsg);
+                    });
+                    rzp.open();
+                } catch (e: any) {
+                    console.error("Error creating Razorpay instance:", e);
+                    toast.error("Failed to initialize payment window");
+                    setIsProcessing(false);
+                    if (onPaymentError) onPaymentError(e.message);
+                }
+            }, 300);
 
         } catch (error: any) {
-            console.error(error);
+            console.error("handlePayment Error:", error);
             toast.error(error.message || "Something went wrong");
             setIsProcessing(false);
         }
