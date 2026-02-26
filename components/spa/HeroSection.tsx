@@ -7,7 +7,7 @@ import Image from "next/image";
 
 import { useBooking } from "@/context/BookingContext";
 
-const spaHero = "/assets/spa-hero.jpg";
+const spaHero = "/Loaction images/KALYAN NAGAR/4.JPG";
 const spaVideo = "/assets/spa-video.mp4";
 
 const HeroSection = () => {
