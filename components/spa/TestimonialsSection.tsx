@@ -6,27 +6,27 @@ import { Quote } from "lucide-react";
 const testimonials = [
   {
     quote:
-      "An oasis of tranquility. The attention to hygiene and detail is unparalleled. I left feeling reborn.",
-    author: "Priya S.",
-    location: "Bangalore",
+      "Spa Le Paris – A Perfect Blend of Luxury & Safety! I recently visited Spa Le Paris, and it was an absolutely amazing experience!",
+    author: "Ahmed",
+    location: "Local Guide",
   },
   {
     quote:
-      "Every visit is a journey to complete relaxation. The therapists understand exactly what you need.",
-    author: "Anika M.",
-    location: "Delhi",
+      "I booked an appointment for my mom for Swedish massage. After she came out she looked so relaxed and her mood was comparatively better. This was a right decision bringing her here.",
+    author: "Jahnavi Shanker",
+    location: "Local Guide",
   },
   {
     quote:
-      "The cleanliness and ambiance create such peace of mind. This is truly luxury wellness at its finest.",
-    author: "Rahul K.",
-    location: "Bangalore",
+      "Thank you for the overall Beautiful experience... Stress relieving, relaxing, refreshing and rejuvenating ..all put together... Truly Healing Hands...",
+    author: "Kavitha",
+    location: "Guest",
   },
   {
     quote:
-      "From the moment you enter, stress melts away. The service quality sets a new standard.",
-    author: "Meera D.",
-    location: "Pune",
+      "The service is amazing with affordable price trust me and go here, staff is very friendly and kind. Very neat and clean service",
+    author: "Anjali Babusenan",
+    location: "Guest",
   },
 ];
 
@@ -87,7 +87,7 @@ const TestimonialsSection = () => {
           <Quote className="w-12 h-12 text-champagne/40 mx-auto mb-8" strokeWidth={1} />
 
           {/* Testimonial Content */}
-          <div className="relative h-48 md:h-40">
+          <div className="relative min-h-[320px] sm:min-h-[280px] md:min-h-[220px]">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
