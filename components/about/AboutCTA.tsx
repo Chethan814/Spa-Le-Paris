@@ -24,7 +24,7 @@ const AboutCTA = () => {
                         </Button>
                     </Link>
 
-                    <Link href="/franchise">
+                    <Link href="/locations">
                         <Button variant="outline" size="lg" className="group min-w-[200px] border-champagne text-champagne-dark hover:bg-champagne/10">
                             <span>View Locations</span>
                         </Button>
